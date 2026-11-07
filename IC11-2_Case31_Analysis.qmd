@@ -1,0 +1,190 @@
+
+---
+title: "Case 31: Employees Federal Credit Union"
+subtitle: "Summary of Data Analysis | R1, R2, R5 & R6"
+author: "Carmen Lia Jimenez Rodriguez"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    code-fold: true
+    echo: false
+    warning: false
+    message: false
+    smaller: true
+execute:
+  echo: false
+  warning: false
+  message: false
+  results: hide
+
+---
+
+```{r}
+
+#| include: false
+
+
+library(haven)
+
+efcu <- read_sav("Case 31 Data_efcu_4.sav")
+
+dim(efcu)
+names(efcu)
+```
+
+```{r}
+#| include: false 
+
+# R5: Awareness of Credit Union Services
+
+# Select questions Q13 to Q26
+services <- efcu[paste0("q", 13:26)]
+
+# Check frequencies for the first service
+table(services$q13, useNA = "ifany")
+
+# Calculate percentages
+round(prop.table(table(services$q13)) * 100, 2)
+```
+
+```{r}
+# R5: Frequency and percentage for all services
+
+for (variable in names(services)) {
+  cat("\nService:", variable, "\n")
+
+  counts <- table(services[[variable]], useNA = "ifany")
+  print(counts)
+
+  percentages <- round(
+    prop.table(table(services[[variable]])) * 100, 2
+  )
+  print(percentages)
+}
+```
+```{r}
+
+# R5: Percentage of members unaware of each service
+
+unaware_pct <- sapply(services, function(x) {
+  valid <- !is.na(x)
+  if (sum(valid) == 0) return(NA_real_)
+  mean(as.numeric(x[valid]) == 3) * 100
+})
+
+barplot(
+  unaware_pct,
+  main = "Members Unaware of Credit Union Services",
+  xlab = "Services",
+  ylab = "Percentage Unaware (%)",
+  col = "steelblue",
+  las = 2,
+  ylim = c(0, 100)
+)
+
+```
+
+```{r}
+
+# R6: Operational Effectiveness
+
+# Select the relevant survey questions
+r6_variables <- c(
+  "q9", "q10", "q11", "q12",
+  "q31", "q32", "q33", "q34", "q37"
+)
+
+# Check descriptive statistics
+summary(efcu[r6_variables])
+
+# Check response frequencies
+for (variable in r6_variables) {
+  cat("\nQuestion:", variable, "\n")
+  print(table(efcu[[variable]], useNA = "ifany"))
+}
+
+```
+
+```{r}
+
+#| echo: false
+#| results: asis
+#| warning: false
+#| message: false
+
+# R6: Descriptive Statistics
+
+rating_vars <- c("q31", "q32", "q33", "q34")
+
+r6_summary <- data.frame(
+  Question = rating_vars,
+  N = sapply(efcu[rating_vars], function(x)
+    sum(!is.na(x))),
+  Mean = sapply(efcu[rating_vars], function(x)
+    round(mean(as.numeric(x), na.rm = TRUE), 2)),
+  SD = sapply(efcu[rating_vars], function(x)
+    round(sd(as.numeric(x), na.rm = TRUE), 2))
+)
+
+knitr::kable(
+  r6_summary,
+  format = "html",
+  caption = "Operational Effectiveness: Descriptive Statistics",
+  col.names = c("Question", "N", "Mean", "SD"),
+  align = "c"
+)
+```
+
+## R6: Interpretation of Results
+
+The descriptive analysis included 128 respondents. Among the four operational effectiveness measures, Q31 had the highest mean score (M = 3.95, SD = 0.68), followed by Q32 (M = 3.72, SD = 0.79) and Q33 (M = 3.59, SD = 0.68).
+
+Q34 had the lowest mean score (M = 3.46, SD = 0.78), suggesting that this area may require further attention, assuming higher scores represent more favorable evaluations.
+
+Overall, the results show differences in how members evaluated the four aspects of credit union operations. These findings can help identify areas of relative strength and potential improvement.
+
+
+## R1: Reasons for Joining the Credit Union
+
+R1 examines why members decided to join Employees Federal Credit Union.
+
+The questionnaire includes Q2, which asks respondents about their reasons for joining. However, Q2 is not included in the cleaned SPSS dataset provided for this analysis.
+
+Therefore, frequencies and percentages could not be calculated for R1.
+
+## R2: Reasons for Using Other Financial Institutions
+
+R2 examines why members borrow money from financial institutions other than the Credit Union.
+
+The questionnaire addresses this research question through Q29. However, Q29 is not included in the cleaned SPSS dataset.
+
+As a result, the reasons for borrowing from other institutions could not be analyzed directly. Additional data would be needed to answer R2 completely.
+
+## Conclusions and Recommendations
+
+The analysis of 128 survey responses provided insights into members' awareness of credit union services and their evaluations of operational effectiveness.
+
+For R5, the findings revealed potential opportunities to improve awareness of available services. For example, 64.84% of respondents selected the "unaware" category for Q13.
+
+For R6, the descriptive results showed that Q31 had the highest mean score (M = 3.95), while Q34 had the lowest (M = 3.46).
+
+R1 and R2 could not be fully answered because Q2 and Q29 were not included in the available dataset.
+
+Overall, these findings suggest that the credit union should further investigate service awareness and members' evaluations of its operations before developing targeted improvements.
+
+
+
+## Appendix
+
+### Data Source
+Case 31: Employees Federal Credit Union  
+Cleaned SPSS Dataset: Case 31 Data_efcu_4.sav
+
+### GitHub Repository
+[GitHub Repository](URL_DEL_REPOSITORIO)
+
+### GitHub Pages
+[Published Presentation](URL_DE_GITHUB_PAGES)
+
